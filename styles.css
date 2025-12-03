@@ -1,0 +1,113 @@
+/* Import font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Global */
+html, body, [class*="st"] {
+    font-family: 'Poppins', sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+
+    /* Futuristic gradient */
+    background: linear-gradient(
+        135deg,
+        #0f172a 0%,
+        #1e3a8a 50%,
+        #4338ca 100%
+    );
+    background-attachment: fixed;
+}
+
+/* Page wrapper spacing */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 20px;
+    gap: 30px;
+}
+
+/* Title */
+h1 {
+    font-weight: 700;
+    text-align: center;
+    color: #ffffff;
+}
+
+/* Subtitle text */
+.subtitle {
+    text-align: center;
+    font-size: 16px;
+    color: #cbd5e1;
+    margin-top: -10px;
+    max-width: 420px;
+}
+
+.subtitle .p {
+    text-align: center;
+}
+
+/* Input */
+input[type="number"] {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 10px 14px;
+    width: 100%;
+    font-size: 15px;
+    text-align: center;
+}
+
+input[type="number"]:focus {
+    border-color: rgba(140, 205, 255, 0.9);
+    outline: none;
+}
+
+/* Button */
+div.stButton > button {
+    width: 100%;
+    background: linear-gradient(135deg, #3b82f6, #a855f7);
+    color: white;
+    border-radius: 14px;
+    padding: 14px 0;
+    border: none;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    margin-top: 10px;
+}
+
+div.stButton > button:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 40px rgba(168, 85, 247, 0.5);
+}
+
+/* Result card inside glass */
+.result-container {
+    text-align: center;
+    margin-top: 15px;
+    color: #ffffff;
+}
+
+/* Progress BG */
+.progress-bg {
+    width: 100%;
+    height: 28px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+/* Progress bar fill */
+.progress-bar {
+    height: 100%;
+    border-radius: 14px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 28px;
+    color: #ffffff;
+    transition: width 1s ease;
+}

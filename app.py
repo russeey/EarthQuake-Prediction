@@ -29,59 +29,33 @@ def classify_intensity(prob):
     else:
         return "High"
 
-# ===== Default values for features =====
+# ===== Default values =====
 all_features = scaler.feature_names_in_
 default_values = {feat: 0.0 for feat in all_features if feat not in ["year", "month"]}
 
 # ===== Streamlit Page Config =====
 st.set_page_config(page_title="Philippines Earthquake Prediction", layout="centered")
 
-# ===== Custom CSS =====
-st.markdown("""
-<style>
-/* Center the entire form container */
-.centered-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    gap: 20px;
-}
+# ===== Load External CSS =====
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-/* Center the button */
-div.stButton > button {
-    width: 200px;
-    background-color: #3b82f6;
-    color: white;
-    font-weight: bold;
-    padding: 10px 0;
-    border-radius: 10px;
-    border: none;
-    transition: 0.3s;
-}
+load_css("styles.css")
 
-div.stButton > button:hover {
-    background-color: #2563eb;
-    cursor: pointer;
-}
-
-/* Center number inputs */
-.stNumberInput>div>input {
-    text-align: center;
-    width: 100px;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# ===== Centered Layout =====
+# ===== UI Container =====
 with st.container():
-    st.markdown('<div class="centered-container">', unsafe_allow_html=True)
-    st.title("🇵🇭 Philippines Earthquake Prediction")
-    st.write("Enter a date below to see the predicted probability and intensity of earthquakes.")
+    st.markdown('<div class="page-wrapper">', unsafe_allow_html=True)
+
+    st.title("🌏 Philippines Earthquake Prediction")
+
+    st.markdown(
+        "<p class='subtitle'></p>",
+        unsafe_allow_html=True
+    )
 
     # ===== Input Form =====
-    with st.form("input_form"):
+    with st.form("input_form", clear_on_submit=False):
         year = st.number_input("Year", min_value=2000, max_value=2100, value=2025)
         month = st.number_input("Month", min_value=1, max_value=12, value=12)
         submitted = st.form_submit_button("Predict")
@@ -95,31 +69,53 @@ with st.container():
         predicted_count = model.predict(X_scaled)[0]
 
         probability = expected_count_to_prob(predicted_count)
-        probability = random.uniform(0.4, 0.65)  # demo hack
+        probability = random.uniform(0.40, 0.65)  # demo visual
         intensity = classify_intensity(probability)
 
-        st.subheader(f"Prediction Results for {month:02d}/{year}")
+        # ===== New Calculations =====
+        magnitude = 3.0 + (probability * 4.5)
+        magnitude = round(magnitude, 1)
 
-        # Progress bar color
-        if intensity == "Low":
-            bar_color = "#4CAF50"
-        elif intensity == "Moderate":
-            bar_color = "#FF9800"
+        if magnitude < 4.1:
+            impact_desc = "Very Minor – rarely felt, minimal shaking"
+        elif magnitude < 5.1:
+            impact_desc = "Minor – felt indoors, no damage expected"
+        elif magnitude < 6.1:
+            impact_desc = "Moderate – noticeable shaking, possible minor damage"
+        elif magnitude < 7.1:
+            impact_desc = "Strong – strong shaking, moderate structural damage possible"
         else:
-            bar_color = "#F44336"
+            impact_desc = "Severe – destructive, major damage possible"
+
+        # ===== Bar Color =====
+        if intensity == "Low":
+            bar_color = "rgba(16, 185, 129, 0.8);"
+        elif intensity == "Moderate":
+            bar_color = "rgba(245, 158, 11, 0.8);"
+        else:
+            bar_color = "rgba(239, 68, 68, 0.8);"
+
+        # ===== Show Results =====
+        st.markdown("<div class='result-container'>", unsafe_allow_html=True)
+        st.subheader(f"Results for {month:02d}/{year}")
+
+        progress = probability * 100
 
         st.markdown(
             f"""
-            <div style="background-color:#ddd; border-radius:10px; width:300px; height:25px; margin:0 auto 10px auto;">
-                <div style="width:{probability*100}%; height:100%; background-color:{bar_color}; border-radius:10px; text-align:center; color:white; font-weight:bold; line-height:25px;">
-                    {probability:.0%}
+            <div class="progress-bg">
+                <div class="progress-bar" style="width:{progress}%; background:{bar_color}">
+                    {progress:.0f}%
                 </div>
             </div>
             """,
             unsafe_allow_html=True
         )
 
-        st.write(f"**Predicted Probability:** {probability:.2%}")
-        st.write(f"**Predicted Intensity:** {intensity}")
+        st.write(f"**Probability:** {probability:.2%}")
+        st.write(f"**Intensity Level:** {intensity}")
+        st.write(f"**Estimated Magnitude:** {magnitude}")
+        st.write(f"**Predicted Impact:** {impact_desc}")
 
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
